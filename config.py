@@ -1,0 +1,35 @@
+class Config(object):
+    embed_size = 300
+    num_channels = 100
+    kernel_size = [3, 4, 5]
+    output_size = 2
+    max_epochs = 20
+    lr = 0.001
+    weight_decay = 1e-5
+    batch_size = 32
+    max_sen_len = 300
+    dropout_keep = 0.8
+
+    label_dict = {"Material Science": 0, "Chemistry": 1}
+    json_path = "data/wos2class.json"
+    train_data_path = "data/wos2class.train.json"
+    test_data_path = "data/wos2class.test.json"
+    model_to_load_path = "model/BestModel.pth"  # path to model which will be used in evaluation or to continue training
+    train_ratio = 0.8
+    batch_size = 32
+    learning_rate = 1e-5
+    output_size = 2
+    in_channels = 1
+    out_channels = 20
+    kernel_heights = [2, 3, 4]
+    stride = 1
+    padding = 0
+    keep_probab = 0.75  # dropout keep probability
+    embedding_length = 300
+    use_existing_data = True  # generate train-test data from wos2class.json or use pre-computed train-test data
+    augment = False  # augment train data or not
+    split_method = 1  # 0: randomly splitting data, 1: splitting label-wise
+    epochs = 200
+    print_frequency = 25
+    continue_train = True  # whether continue from saved model or start from beginning
+    train = False  # train or test

@@ -10,33 +10,33 @@ import torch.nn.parallel
 class Embedder(object):
     """
      Uses Sister (https://github.com/tofunlp/sister) which uses FastText.
-     Generates 300 dimension sentence embeddings.
+     Generates 300 dimension sentence - word embeddings.
     """
-    def __init__(self):
+    def __init__(self, embedding_size):
         self.setup_model()
+        self.embedding_size = embedding_size
 
     def setup_model(self):
-        # INFERSENT
-        # params_model = {'bsize': 64, 'word_emb_dim': 300, 'enc_lstm_dim': 2048, 'pool_type': 'max', 'dpout_model': 0.0, 'version': 1}
-        # self.model = InferSent(params_model)
-        # self.model.load_state_dict(torch.load(Args.infersent_path))
-        # self.model.cuda()
-        # self.model.set_w2v_path(Args.glove_path)
-        # print("Creating vocabulary for InferSent model.")
-        # self.model.build_vocab_k_words(K=100000)
-
-
-        # Sister (FastText)
+        # FastText
         self.model = sister.MeanEmbedding(lang="en")
 
     def get_embeddings(self, sentences):
-        # InferSent
-        #embeddings = self.model.encode(sentences, bsize=128, tokenize=False, verbose=True)
-
-        # Sister
-        embeddings = np.zeros((len(sentences), 300))
+        # FastText
+        embeddings = np.zeros((len(sentences), self.embedding_size))
         for i, sentence in enumerate(sentences):
             embeddings[i] = self.model(sentence)
+
+        return embeddings
+
+    def get_word_embeddings(self, tokenized_sentences):
+        # FastText
+        amount_of_sentences = len(tokenized_sentences)
+        amount_of_words = len(tokenized_sentences[0])
+        embedding_size = self.embedding_size
+
+        embeddings = np.zeros((amount_of_sentences, amount_of_words, embedding_size))
+        for i, tokens in enumerate(tokenized_sentences):
+            embeddings[i] = self.model.word_embedder.get_word_vectors(tokens)
 
         return embeddings
 
