@@ -1,8 +1,9 @@
 import torch
 import torch.nn.functional as F
 import math
-import matplotlib.pyplot as plt
 import test
+from data_manager import DataManager
+
 
 class Trainer(object):
     # keep track of values
@@ -10,12 +11,25 @@ class Trainer(object):
     train_accs = []
     test_accs = []
     best_test_acc = 0.
+    augmenter = None
 
     def __init__(self, config, train_dataset, test_dataset):
         self.loss_fn = F.cross_entropy
         self.config = config
         self.test_dataset = test_dataset
         self.train_dataset = train_dataset
+
+    def assign_augmenter(self, augmenter):
+        # data augmenter
+        self.augmenter = augmenter
+
+    def create_data(self):
+        # create data manager and read data
+        if not self.config.use_existing_data:
+            # preprocess data and create wos2class.text.json and wos2class.train.json
+            data_manager = DataManager(self.config, self.augmenter)
+            data_manager.preprocess_data()
+            data_manager.create_train_test_jsonfile()
 
     def clip_gradient(self, model, clip_value):
         params = list(filter(lambda p: p.grad is not None, model.parameters()))
@@ -65,18 +79,18 @@ class Trainer(object):
             train_acc_epoch += acc.item()
 
             if steps % self.config.print_frequency == 0:
-                print(f'Epoch: {epoch + 1}, Idx: {idx + 1}, Training Loss: {loss.item():.4f}, Training Accuracy: {acc.item(): .2f}%')
+                print(f'Epoch: {epoch}, Idx: {idx + 1}, Training Loss: {loss.item():.4f}, Training Accuracy: {acc.item(): .2f}%')
 
         train_acc_epoch /= last_idx - 1
 
         # evaluate
-        test_acc_epoch = test.evaluate_model(model, self.test_dataset, self.config.batch_size)
+        results = test.evaluate_model(model, self.test_dataset, self.config.batch_size)
+        test_acc_epoch = results["accuracy"]
         print(f"Accuracy at the end of epoch {epoch}: {test_acc_epoch}")
 
         # save values at the end of each epoch for plotting
         self.train_accs.append(train_acc_epoch)
         self.test_accs.append(test_acc_epoch)
-        # self.plot()
 
         if epoch % 1 == 0:
             # Save model and values
@@ -104,27 +118,3 @@ class Trainer(object):
                 'best_test_acc': self.best_test_acc
             }, f'model/BestModel.pth')
             print(f'Epoch {epoch}, *BestModel* successfully saved.')
-
-
-
-    def plot(self):
-        # plt.plot(range(len(self.train_losses)), self.train_losses, label="line 1")
-        plt.plot(range(len(self.train_accs)), self.train_accs, label="Train Accuracy")
-        plt.plot(range(len(self.test_accs)), self.test_accs, label="Test Accuracy")
-        plt.xlabel('Epoch')
-        # Set the y axis label of the current axis.
-        plt.ylabel('Accuracy')
-        # Set a title of the current axes.
-        plt.title('Accuracy over epochs on train and test datasets.')
-        # show a legend on the plot
-        plt.legend()
-        # Display a figure.
-        plt.show()
-
-        # plt.plot('x', 'y1', data=self.train_accs, marker='o', markerfacecolor='blue', markersize=12, color='skyblue', linewidth=4)
-        # plt.plot('x', 'y2', data=self.train_losses, marker='', color='olive', linewidth=2)
-        # plt.legend()
-        # plt.show()
-
-
-
