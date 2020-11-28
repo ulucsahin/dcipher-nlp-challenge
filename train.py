@@ -2,7 +2,6 @@ import torch
 import torch.nn.functional as F
 import math
 import test
-from data_manager import DataManager
 
 
 class Trainer(object):
@@ -11,25 +10,13 @@ class Trainer(object):
     train_accs = []
     test_accs = []
     best_test_acc = 0.
-    augmenter = None
+    current_epoch = 0
 
     def __init__(self, config, train_dataset, test_dataset):
         self.loss_fn = F.cross_entropy
         self.config = config
-        self.test_dataset = test_dataset
         self.train_dataset = train_dataset
-
-    def assign_augmenter(self, augmenter):
-        # data augmenter
-        self.augmenter = augmenter
-
-    def create_data(self):
-        # create data manager and read data
-        if not self.config.use_existing_data:
-            # preprocess data and create wos2class.text.json and wos2class.train.json
-            data_manager = DataManager(self.config, self.augmenter)
-            data_manager.preprocess_data()
-            data_manager.create_train_test_jsonfile()
+        self.test_dataset = test_dataset
 
     def clip_gradient(self, model, clip_value):
         params = list(filter(lambda p: p.grad is not None, model.parameters()))
@@ -118,3 +105,11 @@ class Trainer(object):
                 'best_test_acc': self.best_test_acc
             }, f'model/BestModel.pth')
             print(f'Epoch {epoch}, *BestModel* successfully saved.')
+
+    def begin_training(self, model):
+        # optimizer
+        optim = torch.optim.Adam(model.parameters(), lr=self.config.lr, weight_decay=self.config.weight_decay)
+
+        # begin training
+        for epoch in range(self.current_epoch, self.config.epochs):
+            self.train_model(model, optim, epoch)

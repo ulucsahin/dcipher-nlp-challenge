@@ -38,5 +38,5 @@ class Config(object):
     # run settings
     train = True  # train or test
     continue_train = False  # whether continue from saved model or start from beginning
-    use_existing_data = False  # generate train-test data from wos2class.json or use pre-computed train-test data
+    use_existing_data = True  # generate train-test data from wos2class.json or use pre-computed train-test data
     augment = False  # augment train data or not, only applicable if use_existing_data is False

@@ -10,7 +10,24 @@ from sklearn.metrics import f1_score
 from matplotlib import pyplot as plt
 import seaborn as sn
 import pandas as pd
+from util import *
 
+
+def begin_evaluation(config, model, test_dataset):
+    # evaluate model
+    results = evaluate_model(model, test_dataset, config.batch_size)
+
+    # get saved accuracy values during training
+    train_accs, test_accs = load_accuracies(config.model_to_load_path)
+
+    # display results
+    plot_accuracies(train_accs, test_accs)
+    draw_roc(results)
+    draw_precision_recall_curve(results)
+    f1_score = calculate_f1_score(results)
+    draw_confusion_matrix(results["confusion_matrix"])
+
+    print(f"Accuracy on test dataset: {results['accuracy']}")
 
 def evaluate_model(model, test_dataset, batch_size):
     """
@@ -140,18 +157,21 @@ def draw_roc(result):
     lr_auc = roc_auc_score(labels, probs)
 
     # summarize scores
-    print('Logistic: ROC AUC=%.3f' % (lr_auc))
+    print('ROC AUC=%.3f' % (lr_auc))
 
     # calculate roc curves
     lr_fpr, lr_tpr, _ = roc_curve(labels, probs)
+
     # plot the roc curve for the model
     plt.plot(lr_fpr, lr_tpr, marker='.')
+
     # axis labels
     plt.xlabel('False Positive Rate')
     plt.ylabel('True Positive Rate')
-    # show the legend
-    plt.legend()
-    # show the plot
+
+    # title
+    plt.title('ROC Curve')
+
     plt.show()
 
 
@@ -172,9 +192,10 @@ def draw_precision_recall_curve(result):
     # axis labels
     plt.xlabel('Recall')
     plt.ylabel('Precision')
-    # show the legend
-    plt.legend()
-    # show the plot
+
+    # title
+    plt.title('Precision-Recall Curve')
+
     plt.show()
 
 
@@ -190,6 +211,7 @@ def calculate_f1_score(result):
     f1 = f1_score(labels, predictions)
 
     return f1
+
 
 def draw_confusion_matrix(cm):
     """
@@ -207,7 +229,10 @@ def draw_confusion_matrix(cm):
 
     plt.xlabel("Actual")
     plt.ylabel("Predicted")
+    plt.title('Confusion Matrix')
+
     plt.show()
+
 
 def plot_accuracies(train_accs, test_accs):
     """
@@ -217,20 +242,14 @@ def plot_accuracies(train_accs, test_accs):
     :return: None
     """
 
-    # plt.plot(range(len(self.train_losses)), self.train_losses, label="line 1")
     plt.plot(range(len(train_accs)), train_accs, label="Train Accuracy")
     plt.plot(range(len(test_accs)), test_accs, label="Test Accuracy")
-    plt.xlabel('Epoch')
-    # Set the y axis label of the current axis.
-    plt.ylabel('Accuracy')
-    # Set a title of the current axes.
-    plt.title('Accuracy over epochs on train and test datasets.')
-    # show a legend on the plot
-    plt.legend()
-    # Display a figure.
-    plt.show()
 
-    # plt.plot('x', 'y1', data=self.train_accs, marker='o', markerfacecolor='blue', markersize=12, color='skyblue', linewidth=4)
-    # plt.plot('x', 'y2', data=self.train_losses, marker='', color='olive', linewidth=2)
-    # plt.legend()
-    # plt.show()
+    plt.xlabel('Epoch')
+    plt.ylabel('Accuracy')
+
+    # Title
+    plt.title('Accuracy over Epochs on Train and Test Datasets')
+
+    plt.legend()
+    plt.show()

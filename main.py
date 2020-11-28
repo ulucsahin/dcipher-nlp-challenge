@@ -1,11 +1,13 @@
 from embedding_manager import Embedder
 from dataset import WOSDataset
 from CNN import CNN
-import train
+from train import Trainer
 from config import Config
 import random
 import test
+from data_manager import DataManager
 import nlpaug.augmenter.word as nas
+
 from util import *
 
 if __name__ == '__main__':
@@ -16,6 +18,17 @@ if __name__ == '__main__':
 
     # create text embedder
     embedder = Embedder(config.embedding_length)
+
+    augmenter = None
+    if config.augment:
+        augmenter = nas.AntonymAug()
+
+    # preprocess data and create wos2class.text.json and wos2class.train.json
+    if not config.use_existing_data:
+        data_manager = DataManager(config, augmenter)
+        data_manager.preprocess_data()
+        data_manager.create_train_test_jsonfile()
+        data_manager.count_labels()
 
     # create dataset and dataloaders
     train_dataset = WOSDataset(config, embedder, is_train=True)
@@ -29,39 +42,24 @@ if __name__ == '__main__':
     # create model
     model = CNN(config)
 
-    if config.continue_train:
-        model = load_model(model, config.model_to_load_path)
-
-    # train
     if config.train:
-        trainer = train.Trainer(config, train_dataset, test_dataset)
+        trainer = Trainer(config, train_dataset, test_dataset)
 
-        if config.augment:
-            augmenter = nas.AntonymAug()
-            trainer.assign_augmenter(augmenter)
+        # restore model if continuing training
+        if config.continue_train:
+            # load from checkpoint
+            checkpoint = torch.load(config.model_to_load_path)
+            model.load_state_dict(checkpoint['model'])
+            trainer.train_accs = checkpoint['train_accs']
+            trainer.test_accs = checkpoint['test_accs']
+            trainer.current_epoch = checkpoint['epoch']
 
-        # optimizer
-        optim = torch.optim.Adam(model.parameters(), lr=config.lr, weight_decay=config.weight_decay)
-
-        for epoch in range(config.epochs):
-            trainer.train_model(model, optim, epoch)
-    # evaluate
+        # train
+        trainer.begin_training(model)
     else:
-        model = load_model(model, config.model_to_load_path)
-        train_accs, test_accs = load_accuracies(config.model_to_load_path)
+        # restore model to evaluate
+        checkpoint = torch.load(config.model_to_load_path)
+        model.load_state_dict(checkpoint['model'])
 
-        results = test.evaluate_model(model, test_dataset, config.batch_size)
-        print(f"Accuracy on test dataset: {results['accuracy']}")
-        print(results["confusion_matrix"])
-
-        test.plot_accuracies(train_accs, test_accs)
-
-
-
-
-
-
-
-
-
-
+        # evaluate
+        test.begin_evaluation(config, model, test_dataset)
