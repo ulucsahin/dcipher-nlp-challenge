@@ -1,7 +1,7 @@
 # Dcipher NLP Challenge - Mehmet Uluç Şahin
 
 ## Introduction
-In this challenge I have implemented a Convolutional Neural Network (CNN) for classifying text data into either "Chemistry" or "Material Science" classes. I have used Python with PyTorch framework while utilizing pre-trained FastText model to obtain embeddings from pre-processed text data. After hyperparameter finetuning, the CNN model achieved 71.73% accuracy and AUC=0.799 score on test dataset.
+In this challenge I have implemented a Convolutional Neural Network (CNN) for classifying text data into either "Chemistry" or "Material Science" classes. I have used Python with PyTorch framework while utilizing pre-trained FastText model to obtain embeddings from pre-processed text data. After hyperparameter finetuning, the CNN model achieved 71.73% accuracy and AUC=0.793 score on test dataset. Achieved F-1 Score is 0.721.
 
 ## Code Structure
 Main method is placed in "main.py" file. In the challenge description it is stated that preprocessing, feature extraction, classification etc. should be placed in train.py file. However, I have a dedicated class for data operations, including preprocessing, which is included in "data_manager.py" file. This file is created and used in "main.py" before training operation to handle all needed data operations. This code is only needed to run once to create required train and test data along with their pre-processing. I have decided that separating these operations into different classes result in much clearer code.
@@ -33,7 +33,8 @@ In contrast to other pre-trained models such as Word2Vec, FastText is able to ge
 
 ## Training
 Training is conducted with following parameters:
-Learning Rate = 0.000005
+Learning Rate = 0.0005
+Learning Rate Halved Every: 5 epochs
 Weight Decay = 1e-5
 Batch Size = 32
 Convolution Layer Out Channels = 25
@@ -42,9 +43,8 @@ Stride = 1
 Padding = 0
 Dropout Keep Probability = 0.6
 
-
 ## Results
-Accuracy ratings on train and test dataset can be seen below. It is easy to notice the overfitting.
+Accuracy ratings on train and test dataset can be seen below. It is easy to notice the overfitting. Train accuracies get closer to 100% while test accuracies stay around 71%.
 ![](images/Accuracy.png)
 
 Precision-Recall curve can be seen in the following figure:
@@ -53,10 +53,9 @@ Precision-Recall curve can be seen in the following figure:
 ROC Curve can be seen in the figure below. Achieved AUC score on test dataset is 0.799.
 ![](images/ROC.png)
 
-Confusion Matrix is as follows, False Positive and False Negative rates are close to each other. This may be caused from similarity of classes.
-![](images/ConfusionMatrix.png)
-
-
+Accuracy: 71.73%
+F-1 Score: 0.721
+AUC: 0.793
 
 ## Challenges and How to Improve Further
 In my case, the model was overfitting easily. With the 0.8 train and test ratio, only 5995 data instances are available for training, which is not a big number when training neural networks. For this reason, I needed to keep the model very simple and avoid adding more layers. I used a low dropout keep probability (0.6) to further "simplify" the model for the same reason.
