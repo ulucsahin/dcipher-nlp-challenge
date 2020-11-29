@@ -39,13 +39,6 @@ class DataManager(object):
         # in place
         random.shuffle(self.data)
 
-    # def read_test_train_data(self, train_path, test_path):
-    #     with open(train_path) as json_file:
-    #         self.data_train = json.load(json_file)
-    #
-    #     with open(test_path) as json_file:
-    #         self.data_test = json.load(json_file)
-
     def apply_regex(self):
         """
         Insert space before special characters such as "," or "."  etc.
@@ -62,11 +55,8 @@ class DataManager(object):
             current_abstract = self.get_abstract_from_idx(i)
 
             # apply regex
-            # pattern = re.compile(r"([.()!\-\/@\[\]\%])")
             pattern = re.compile(r"([.,])")
             stopword_pattern = re.compile(r'\b(' + r'|'.join(stopwords) + r')\b\s*')
-            # current_title = pattern.sub(" \\1 ", current_title).lower()
-            # current_abstract = pattern.sub(" \\1 ", current_abstract).lower()
             current_title = pattern.sub("", current_title).lower()
             current_abstract = pattern.sub("", current_abstract).lower()
 

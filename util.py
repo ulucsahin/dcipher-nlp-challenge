@@ -8,6 +8,7 @@ def random_seed(seed_value):
     if torch.cuda.is_available:
         torch.cuda.manual_seed_all(seed_value)
 
+
 def load_accuracies(checkpoint_path):
     checkpoint = torch.load(checkpoint_path)
     train_accs = checkpoint['train_accs']
