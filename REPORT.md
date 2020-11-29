@@ -53,7 +53,7 @@ Precision-Recall curve can be seen in the following figure:
 ROC Curve can be seen in the figure below. Achieved AUC score on test dataset is 0.799.
 ![](images/ROC.png)
 
-Confusion Matrix is as follows:
+Confusion Matrix is as follows, False Positive and False Negative rates are close to each other. This may be caused from similarity of classes.
 ![](images/ConfusionMatrix.png)
 
 
