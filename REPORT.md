@@ -33,29 +33,40 @@ In contrast to other pre-trained models such as Word2Vec, FastText is able to ge
 
 ## Training
 Training is conducted with following parameters:
-Learning Rate = 0.0005
-Learning Rate Halved Every: 5 epochs
-Weight Decay = 1e-5
-Batch Size = 32
-Convolution Layer Out Channels = 25
-Convolution Layer Kernel Heights = [3, 4, 5]
-Stride = 1
-Padding = 0
-Dropout Keep Probability = 0.6
+
+<ul>
+<li>Learning Rate = 0.0005</li>
+<li>Learning Rate Halved Every: 5 epochs</li>
+<li>Weight Decay = 1e-5 </li>
+<li>Batch Size = 32 </li>
+<li>Convolution Layer Out Channels = 25 </li>
+<li>Convolution Layer Kernel Heights = [3, 4, 5] </li>
+<li>Stride = 1</li>
+<li>Padding = 0</li>
+<li>Dropout Keep Probability = 0.6 </li>
+</ul>
+
+
+
+
 
 ## Results
-Accuracy ratings on train and test dataset can be seen below. It is easy to notice the overfitting. Train accuracies get closer to 100% while test accuracies stay around 71%.
-![](images/Accuracy.png)
-
-Precision-Recall curve can be seen in the following figure:
-![](images/PrecisionRecall.png)
-
-ROC Curve can be seen in the figure below. Achieved AUC score on test dataset is 0.799.
-![](images/ROC.png)
-
 Accuracy: 71.73%
 F-1 Score: 0.721
 AUC: 0.793
+
+Accuracy plot on train and test dataset can be seen below. It is easy to notice the overfitting. Train accuracies get closer to 100% while test accuracies stay around 71%. <br />
+![](images/Accuracy.png)
+
+Precision-Recall curve can be seen in the following figure: <br />
+![](images/PrecisionRecall.png)
+
+ROC Curve can be seen in the figure below. Achieved AUC score on test dataset is 0.799. <br />
+![](images/ROC.png)
+
+Confusion Matrix can be seen below. False Positive and False Negative ratios are close to each other.  <br />
+![](images/ConfusionMatrix.png)
+
 
 ## Challenges and How to Improve Further
 In my case, the model was overfitting easily. With the 0.8 train and test ratio, only 5995 data instances are available for training, which is not a big number when training neural networks. For this reason, I needed to keep the model very simple and avoid adding more layers. I used a low dropout keep probability (0.6) to further "simplify" the model for the same reason.
