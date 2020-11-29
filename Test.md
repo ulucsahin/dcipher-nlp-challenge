@@ -6,7 +6,7 @@ In this challenge I have implemented a Convolutional Neural Network (CNN) for cl
 ## Model
 The network is composed of 3 convolution layers that take word embeddings of titles as input and another 3 convolution layers that take word embeddings of abstracts as input. The layers for both title and abstract use kernel sizes of 3, 4 and 5. Outputs of these layers are concatenated and fed into fully connected layers for obtaining logits. Model architecture can be seen in the figure below:
 
-![](images/Model.png)
+![](images/model.png)
 
 ## Data and Pre-Processing
 There are 7494 data instances in the dataset. 50.6% of these instances belong to "Material Science" label while the rest belong to "Chemistry" label. Unbalanced datasets can cause neural networks to perform worse since it may create a bias. In our case, data is balanced and there is no need for processing to balance the dataset. Dataset is separated into train and test label-wise with the ratio of 0.8, that is, 80% from both "Chemistry" and "Material Science" are used as training data while the rest is used as test data.
