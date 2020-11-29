@@ -28,6 +28,7 @@ def begin_evaluation(config, model, test_dataset):
     draw_confusion_matrix(results["confusion_matrix"])
 
     print(f"Accuracy on test dataset: {results['accuracy']}")
+    print(f"F1 score: {f1_score}")
 
 def evaluate_model(model, test_dataset, batch_size):
     """
@@ -45,6 +46,7 @@ def evaluate_model(model, test_dataset, batch_size):
     model.eval()
 
     result = {"accuracy": 0.,
+              "loss": 0.,
               "labels": [],
               "predictions": [],
               "probabilities": [],

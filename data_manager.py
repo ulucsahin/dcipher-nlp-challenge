@@ -62,7 +62,8 @@ class DataManager(object):
             current_abstract = self.get_abstract_from_idx(i)
 
             # apply regex
-            pattern = re.compile(r"([.()!\-\/@\[\]\%])")
+            # pattern = re.compile(r"([.()!\-\/@\[\]\%])")
+            pattern = re.compile(r"([.,])")
             stopword_pattern = re.compile(r'\b(' + r'|'.join(stopwords) + r')\b\s*')
             # current_title = pattern.sub(" \\1 ", current_title).lower()
             # current_abstract = pattern.sub(" \\1 ", current_abstract).lower()

@@ -12,7 +12,8 @@ class Config(object):
     label_dict = {"Material Science": 0, "Chemistry": 1}
 
     # optimizer parameters
-    lr = 0.0005
+    lr = 0.005
+    lr_half_integral = 5 # halve lr every 5 epochs
     weight_decay = 1e-5
 
     # model hyperparameters
@@ -26,7 +27,7 @@ class Config(object):
     padding = 0
     keep_probab = 0.6  # dropout keep probability
     embedding_length = 300
-    epochs = 200
+    epochs = 30
     print_frequency = 25
 
     # data settings
@@ -36,7 +37,7 @@ class Config(object):
     num_classes = 2
 
     # run settings
-    train = True  # train or test
+    train = False  # train or test modes
     continue_train = False  # whether continue from saved model or start from beginning
     use_existing_data = True  # generate train-test data from wos2class.json or use pre-computed train-test data
     augment = False  # augment train data or not, only applicable if use_existing_data is False

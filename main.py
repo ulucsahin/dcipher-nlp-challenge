@@ -44,6 +44,7 @@ if __name__ == '__main__':
 
     if config.train:
         trainer = Trainer(config, train_dataset, test_dataset)
+        trainer.current_lr = config.lr
 
         # restore model if continuing training
         if config.continue_train:
@@ -53,9 +54,17 @@ if __name__ == '__main__':
             trainer.train_accs = checkpoint['train_accs']
             trainer.test_accs = checkpoint['test_accs']
             trainer.current_epoch = checkpoint['epoch']
+            trainer.best_test_acc = checkpoint['best_test_acc']
+            trainer.current_lr = checkpoint['current_lr']
 
         # train
-        trainer.begin_training(model)
+        trainer.begin_training(model),
+
+        # evaluate after training ends
+        checkpoint = torch.load(config.model_to_load_path)
+        model.load_state_dict(checkpoint['model'])
+        test.begin_evaluation(config, model, test_dataset)
+    # evaluate only
     else:
         # restore model to evaluate
         checkpoint = torch.load(config.model_to_load_path)
