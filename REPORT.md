@@ -24,7 +24,7 @@ There are 7494 data instances in the dataset. 50.6% of these instances belong to
 
 We see many words with dashes, paranthesis and other special characters. Although it is a common practice to remove special characters, they have a special meaning in our dataset since they belong to names of word entities. For this reason, only "," and "." special characters are separated from words during preprocessing. All "Title" instances are padded to length of 50 and all "Abstract" instances are padded to length of 300. Finally, all words are converted to lowercase and English stopwords are removed.
 
-There is one data instance where "Abstract" part is empty. It is possible to remove this instance to prevent any problems that may arise. However, after padding all data instances to have same lengts, this instance of data is not problematic and "Title" part of it can still prove to be useful. 
+There is one data instance where "Abstract" part is empty. It is possible to remove this instance to prevent any problems that may arise. However, after padding all data instances to have same lengths, this instance of data is not problematic and "Title" part of it can still prove to be useful. 
 
 In my tests, I did not see any improvement on test accuracy when the data is augmented.
 
