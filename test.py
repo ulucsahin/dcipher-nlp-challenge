@@ -1,6 +1,4 @@
-import torch
 import torch.nn.functional as F
-import numpy as np
 import torch.nn.functional as nnf
 from sklearn.metrics import roc_auc_score
 from sklearn.metrics import roc_curve

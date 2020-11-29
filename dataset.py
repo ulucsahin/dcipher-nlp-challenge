@@ -29,11 +29,6 @@ class WOSDataset(Dataset):
         abstract_embeddings = self.embedder.get_word_embeddings([abstract]) # (1, token amount, embedding size)
         label = self.config.label_dict[label]
 
-        # convert to onehot
-        onehot = False
-        if onehot:
-            label = self.indices_to_one_hot(label, self.config.num_classes)
-
         return title_embeddings, abstract_embeddings, label
 
     def indices_to_one_hot(self, data, nb_classes):
